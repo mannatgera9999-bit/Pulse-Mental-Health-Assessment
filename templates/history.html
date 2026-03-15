@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your History</title>
+    <style>
+        body { font-family: Arial; background:#f5f7fb; }
+        .container { max-width:900px; margin:40px auto; background:#fff; padding:25px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+        table { width:100%; border-collapse:collapse; margin-top:15px; }
+        th, td { padding:8px; border-bottom:1px solid #eee; font-size:14px; }
+        th { background:#f0f2ff; }
+        .back-btn { display:inline-block; margin-bottom:20px; padding:8px 14px; background:#4b7bec; color:white; border-radius:6px; text-decoration:none; }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Your Assessment History</h2>
+
+    <a href="/" class="back-btn">← Back to Home</a>
+
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>Stress</th>
+            <th>Cluster</th>
+            <th>Lifestyle Score</th>
+            <th>Sleep</th>
+            <th>Work</th>
+            <th>Screen</th>
+            <th>Activity</th>
+        </tr>
+
+        {% for r in history %}
+        <tr>
+            <td>{{ r.timestamp }}</td>
+            <td>{{ r.stress_level }}</td>
+            <td>{{ r.cluster_id }}</td>
+            <td>{{ r.lifestyle_score }}</td>
+            <td>{{ r.sleep_hours }}</td>
+            <td>{{ r.work_hours }}</td>
+            <td>{{ r.screen_time }}</td>
+            <td>{{ r.physical_activity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>

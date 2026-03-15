@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Dashboard | StressCheck</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background: #eef2f7;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        /* Page wrapper */
+        .dashboard-wrapper {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Main container */
+        .dashboard-card {
+            background: #ffffff;
+            padding: 35px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            background: #4b7bec;
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Summary highlight cards */
+        .stats-row {
+            margin-top: 25px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f9fafb 0%, #eef2ff 100%);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* Chart spacing */
+        canvas {
+            margin-top: 25px;
+        }
+
+        /* Section titles */
+        .section-title {
+            margin-top: 40px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #374151;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+    <div class="dashboard-card">
+
+        <a href="{{ back_url }}" class="back-btn">← Back</a>
+
+        <h1 class="mt-3">Stress & Lifestyle Dashboard</h1>
+        <p class="subtitle">A visual overview of your past assessments.</p>
+
+        <!-- Summary Statistics Row -->
+        <div class="row stats-row">
+            <div class="col-md-4 mb-3">
+                <div class="stat-card">
+                    <div class="stat-title">Total Assessments</div>
+                    <div class="stat-value">{{ labels | length }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="stat-card">
+                    <div class="stat-title">Average Stress Level</div>
+                    <div class="stat-value">
+                        {{
+                            (stress_values | sum) / (stress_values | length)
+                                if stress_values|length > 0 else 0
+                        | round(2) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="stat-card">
+                    <div class="stat-title">Average Lifestyle Score</div>
+                    <div class="stat-value">
+                        {{
+                            (lifestyle_scores | sum) / (lifestyle_scores | length)
+                                if lifestyle_scores|length > 0 else 0
+                        | round(0) }}/100
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stress Chart -->
+        <div class="section-title">Stress Level Trend</div>
+        <canvas id="stressChart" height="90"></canvas>
+
+        <!-- Lifestyle Chart -->
+        <div class="section-title">Lifestyle Score Trend</div>
+        <canvas id="lifestyleChart" height="90"></canvas>
+
+    </div>
+</div>
+
+<script>
+    /* Data from Flask */
+    const labels = {{ labels | tojson }};
+    const stressValues = {{ stress_values | tojson }};
+    const lifestyleScores = {{ lifestyle_scores | tojson }};
+
+    /* Stress Chart */
+    const ctx1 = document.getElementById('stressChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Stress Level (1 = Low, 2 = Moderate, 3 = High)',
+                data: stressValues,
+                borderColor: '#4b7bec',
+                backgroundColor: 'rgba(75, 123, 236, 0.15)',
+                pointBackgroundColor: '#4b7bec',
+                pointRadius: 5,
+                borderWidth: 3,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: {
+                y: { min: 1, max: 3, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+
+    /* Lifestyle Chart */
+    const ctx2 = document.getElementById('lifestyleChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Lifestyle Score (0 – 100)',
+                data: lifestyleScores,
+                borderColor: '#2ecc71',
+                backgroundColor: 'rgba(46, 204, 113, 0.15)',
+                pointBackgroundColor: '#2ecc71',
+                pointRadius: 5,
+                borderWidth: 3,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: {
+                y: { min: 0, max: 100 }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Depression Self Assessment | StressCheck</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+    background:linear-gradient(135deg,#021027,#0b1f3a);
+    font-family:'Segoe UI',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding-top:80px;
+    color:white;
+}
+
+.card-box{
+    width:650px;
+    background:#132844;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.6);
+}
+
+h2{
+    text-align:center;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#a7c4ff;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.progress-dots{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.progress-dots span{
+    height:8px;
+    width:8px;
+    background:#4b7bec;
+    border-radius:50%;
+    display:inline-block;
+    margin:3px;
+}
+
+label{
+    margin-bottom:6px;
+    color:#dbe8ff;
+}
+
+.form-select{
+    margin-bottom:20px;
+    background:#0b1f3a;
+    color:white;
+    border:1px solid #2d4f82;
+}
+
+/* Neon Button */
+
+.btn-main{
+    background:#2f6df6;
+    color:white;
+    width:100%;
+    padding:13px;
+    font-size:16px;
+    border-radius:12px;
+    border:none;
+    margin-top:10px;
+    transition:all 0.25s ease;
+    box-shadow:0 0 10px #2f6df6,0 0 25px #2f6df6;
+}
+
+.btn-main:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 20px #2f6df6,0 0 40px #2f6df6;
+}
+
+/* Result Box */
+
+.result-box{
+    margin-top:25px;
+    padding:20px;
+    border-radius:12px;
+    background:#0b1f3a;
+    text-align:center;
+    font-weight:600;
+    display:none;
+    border:1px solid #2d4f82;
+}
+
+.progress{
+    margin-top:15px;
+    height:10px;
+    background:#1e3b66;
+}
+
+.progress-bar{
+    background:#2f6df6;
+    box-shadow:0 0 15px #2f6df6;
+}
+
+.back-btn{
+    margin-top:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card-box">
+
+<h2>💙 Depression Self-Assessment</h2>
+
+<p class="subtitle">
+Answer honestly to estimate your depression level.
+</p>
+
+<div class="progress-dots">
+<span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<form id="depressionForm">
+
+<label>1. Do you feel low or hopeless frequently?</label>
+<select class="form-select" name="q1">
+<option value="0">Never</option>
+<option value="1">Sometimes</option>
+<option value="2">Often</option>
+<option value="3">Almost Always</option>
+</select>
+
+<label>2. Have you lost interest in activities you usually enjoy?</label>
+<select class="form-select" name="q2">
+<option value="0">Never</option>
+<option value="1">Sometimes</option>
+<option value="2">Often</option>
+<option value="3">Almost Always</option>
+</select>
+
+<label>3. Do you feel fatigued or lacking energy most days?</label>
+<select class="form-select" name="q3">
+<option value="0">Never</option>
+<option value="1">Sometimes</option>
+<option value="2">Often</option>
+<option value="3">Almost Always</option>
+</select>
+
+<label>4. Do you struggle with feelings of worthlessness or guilt?</label>
+<select class="form-select" name="q4">
+<option value="0">Never</option>
+<option value="1">Sometimes</option>
+<option value="2">Often</option>
+<option value="3">Almost Always</option>
+</select>
+
+<label>5. Do you find it difficult to concentrate or make decisions?</label>
+<select class="form-select" name="q5">
+<option value="0">Never</option>
+<option value="1">Sometimes</option>
+<option value="2">Often</option>
+<option value="3">Almost Always</option>
+</select>
+
+<button type="button" class="btn-main" onclick="calculateScore()">
+⚡ Reveal Depression Score
+</button>
+
+</form>
+
+<div class="result-box" id="resultBox">
+
+<div id="scoreText"></div>
+
+<div class="progress">
+<div id="meterBar" class="progress-bar" style="width:0%"></div>
+</div>
+
+</div>
+
+<a href="/psych" class="btn btn-outline-light back-btn">Back</a>
+
+</div>
+
+<script>
+
+function calculateScore(){
+
+let form=document.getElementById("depressionForm");
+
+let total=
+parseInt(form.q1.value)+
+parseInt(form.q2.value)+
+parseInt(form.q3.value)+
+parseInt(form.q4.value)+
+parseInt(form.q5.value);
+
+let score=Math.round((total/15)*10);
+
+let message="";
+
+if(score<=3)
+message="Low depression indicators. Keep maintaining healthy habits.";
+else if(score<=6)
+message="Moderate depression indicators. Consider talking to someone you trust.";
+else
+message="High depression indicators. Professional support may be helpful.";
+
+document.getElementById("scoreText").innerHTML=
+"<h4>Your Depression Score: "+score+"/10</h4>"+message;
+
+document.getElementById("resultBox").style.display="block";
+
+let percent=score*10;
+
+document.getElementById("meterBar").style.width=percent+"%";
+
+}
+
+</script>
+
+</body>
+</html>

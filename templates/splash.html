@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pulse+ | Welcome</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        /* FADE-IN ANIMATION */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* TITLE */
+        .app-title {
+            font-size: 60px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0,200,255,0.4);
+        }
+
+        /* PULSE EFFECT */
+        .pulse-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 15px rgba(0,200,255,0.4); }
+            50% { text-shadow: 0 0 35px rgba(0,200,255,0.8); }
+            100% { text-shadow: 0 0 15px rgba(0,200,255,0.4); }
+        }
+
+        /* TAGLINE */
+        .tagline {
+            font-size: 18px;
+            color: #dce7ff;
+            margin-top: 12px;
+            text-align: center;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            animation: fadeIn 4s ease forwards 1s;
+        }
+    </style>
+
+    <!-- Redirect after 4 sec -->
+    <script>
+        setTimeout(() => {
+            window.location.href = "/";  // home page
+        }, 4000);
+    </script>
+</head>
+
+<body>
+
+    <div class="fade-in">
+        <div class="app-title pulse-glow">Pulse+</div>
+        <div class="tagline">Your Mind. Your Balance.</div>
+    </div>
+
+</body>
+</html>

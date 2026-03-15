@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pulse+ | Mental Health Assessment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #06142a, #0b1d3a, #0e274c);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* TOP NAV */
+        nav {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: #cbd8ff;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* MAIN CARD */
+        .main-card {
+            max-width: 780px;
+            margin: 70px auto;
+            background: rgba(255,255,255,0.06);
+            padding: 45px;
+            border-radius: 22px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 40px rgba(0,0,0,0.45);
+        }
+
+        .main-card h1 {
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .main-card p {
+            opacity: 0.85;
+            margin-bottom: 10px;
+        }
+
+        /* ========== NEON BUTTONS ========== */
+        .neon-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            border: 2px solid #3e8bff;
+            background: rgba(62,139,255,0.15);
+            text-decoration: none;
+            transition: 0.25s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-btn:hover {
+            background: #3e8bff;
+            box-shadow: 0 0 15px #3e8bff, 0 0 35px #3e8bff;
+            transform: translateY(-3px);
+        }
+
+        /* RED NEON LOGOUT */
+        .neon-danger {
+            border-color: #ff5c5c;
+            background: rgba(255,92,92,0.15);
+        }
+        .neon-danger:hover {
+            background: #ff4c4c;
+            box-shadow: 0 0 15px #ff4c4c, 0 0 35px #ff4c4c;
+        }
+
+        /* BUTTON ROW FIX */
+        .btn-row {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .logout-box {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP NAV -->
+<nav>
+    <div style="font-size: 20px; font-weight:700;">
+        <i class="fa-solid fa-brain"></i> StressCheck
+    </div>
+
+    {% if username %}
+        <div>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/breathing">Breathing</a>
+            <a href="/resources">Resources</a>
+            <a href="/logout" style="color:#ff6b6b;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    {% else %}
+        <div>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    {% endif %}
+</nav>
+
+
+<!-- MAIN CONTENT -->
+<div class="main-card">
+
+    <i class="fa-solid fa-brain fa-3x" style="color:#4d8dff;"></i>
+
+    <h1>Mental Health Stress Assessment</h1>
+
+    <p>This platform uses <b>machine learning</b> to estimate stress, track patterns, and provide wellness insights.</p>
+    <p>Designed for <b>wellness and awareness</b>.</p>
+
+    {% if username %}
+        <h5 class="mt-3">Welcome back, <b>{{ username }}</b> 👋</h5>
+
+        <!-- BUTTONS FOR LOGGED-IN USER -->
+        <div class="btn-row">
+            <a href="/details" class="neon-btn">
+                <i class="fa-solid fa-play"></i> Start Assessment
+            </a>
+
+            <a href="/dashboard" class="neon-btn">
+                <i class="fa-solid fa-chart-line"></i> View Dashboard
+            </a>
+
+            <a href="/game" class="neon-btn">
+                <i class="fa-solid fa-gamepad"></i> Stress Relief Game
+            </a>
+        </div>
+
+        <div class="logout-box">
+            <a href="/logout" class="neon-btn neon-danger">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+
+    {% else %}
+        <!-- IF NOT LOGGED IN -->
+        <div class="btn-row">
+            <a href="/login" class="neon-btn">
+                <i class="fa-solid fa-right-to-bracket"></i> Login
+            </a>
+
+            <a href="/register" class="neon-btn">
+                <i class="fa-solid fa-user-plus"></i> Register
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

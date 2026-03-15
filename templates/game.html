@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stress Bubble Pop | StressCheck</title>
+
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- ICONS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #2f80ed 0, #141e30 40%, #0b1020 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        /* CARD */
+        .game-card {
+            width: 1100px;
+            max-width: 100%;
+            background: rgba(9, 15, 30, 0.94);
+            border-radius: 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
+            padding: 24px;
+            color: #f7fbff;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 14px;
+            background: #25345a;
+            color: #e3ebff;
+            border: 1px solid #4356a6;
+        }
+
+        .game-layout {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        /* PLAY AREA */
+        .play-area-wrapper {
+            background: radial-gradient(circle at top, #263b6f 0, #111827 55%, #050816 100%);
+            border-radius: 18px;
+            padding: 14px;
+        }
+
+        .play-area {
+            position: relative;
+            height: 430px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(5, 9, 28, 0.96);
+        }
+
+        /* BUBBLE FLOAT ANIMATION (fixed) */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100%);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-120%);
+                opacity: 1;
+            }
+        }
+
+        /* BUBBLE POP ANIMATION */
+        @keyframes pop {
+            from { transform: scale(1); opacity: 1; }
+            to   { transform: scale(1.6); opacity: 0; }
+        }
+
+        /* BUBBLE BASE */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: black;                     /* FIXED TEXT VISIBILITY */
+            text-shadow: 0 0 4px rgba(255,255,255,0.9);
+            animation: floatUp 3s linear forwards;  /* FIXED MOVEMENT */
+        }
+
+        /* GLOW BUBBLE */
+        .glow-bubble {
+            box-shadow: 0 0 25px rgba(255, 255, 150, 1),
+                        0 0 60px rgba(255, 255, 80, 0.9);
+            border: 3px solid rgba(255, 235, 120, 0.9);
+            color: #2b2b2b;
+            background: radial-gradient(circle, #fff9c4, #ffe082, #ffca28, #f9a825);
+        }
+
+        .bubble.pop {
+            animation: pop 0.25s ease-out forwards;
+        }
+
+        .side-panel {
+            background: #101526;
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .btn-control {
+            width: 100%;
+            border-radius: 999px;
+            padding: 10px;
+            font-weight: 600;
+            background: #4b7bec;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game-card">
+
+    <div class="game-header">
+        <button class="btn back-btn" onclick="window.location.href='/'">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </button>
+
+        <h2 class="text-end">Pop the Stress Bubbles</h2>
+    </div>
+
+    <div class="game-layout">
+
+        <!-- PLAY AREA -->
+        <div class="play-area-wrapper">
+            <div class="play-area" id="playArea"></div>
+        </div>
+
+        <!-- SIDE PANEL -->
+        <div class="side-panel">
+            <p><strong>Score:</strong> <span id="scoreText">0</span></p>
+            <p><strong>Time left:</strong> <span id="timeText">30s</span></p>
+            <p><strong>Best streak:</strong> <span id="streakText">0</span></p>
+
+            <button class="btn-control" id="startButton">
+                <i class="fa-solid fa-circle-play me-1"></i> Start / Restart
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const playArea = document.getElementById('playArea');
+    const scoreText = document.getElementById('scoreText');
+    const timeText = document.getElementById('timeText');
+    const streakText = document.getElementById('streakText');
+    const startButton = document.getElementById('startButton');
+
+    let score = 0, timeLeft = 30, bestStreak = 0, currentStreak = 0;
+    let gameInterval = null, timerInterval = null, gameRunning = false;
+
+    const bubbleColors = [
+        "radial-gradient(circle, #ffffff, #a3c9ff, #4b7bec, #1b3fae)",
+        "radial-gradient(circle, #ffffff, #ffb3c1, #ff5d8f, #c9184a)",
+        "radial-gradient(circle, #ffffff, #b5f7c0, #4cd964, #1e8c3f)",
+        "radial-gradient(circle, #ffffff, #ffe8a3, #f7c948, #b98500)",
+        "radial-gradient(circle, #ffffff, #d7b8ff, #a66cff, #6b21a8)"
+    ];
+
+    const negativeWords = ["Stress", "Negativity", "Sadness", "Fear", "Overthinking"];
+
+    function createBubble() {
+        if (!gameRunning) return;
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+
+        // COLORS
+        bubble.style.background = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
+
+        // SIZE
+        const size = 50 + Math.random() * 70;
+        bubble.style.width = size + "px";
+        bubble.style.height = size + "px";
+
+        // POSITION
+        const maxLeft = playArea.clientWidth - size - 10;
+        bubble.style.left = Math.random() * maxLeft + "px";
+
+        // AUTO POP MIDDLE
+        const autoPopTime = 1500;
+
+        // GLOW BUBBLE (10%)
+        if (Math.random() < 0.10) {
+            bubble.classList.add("glow-bubble");
+            bubble.innerHTML = negativeWords[Math.floor(Math.random() * negativeWords.length)];
+            bubble.dataset.points = 5;
+        } else {
+            bubble.dataset.points = 1;
+        }
+
+        // CLICK POP
+        bubble.addEventListener('click', () => {
+            score += parseInt(bubble.dataset.points);
+            currentStreak++;
+
+            if (currentStreak > bestStreak) bestStreak = currentStreak;
+
+            scoreText.textContent = score;
+            streakText.textContent = bestStreak;
+
+            bubble.classList.add("pop");
+            setTimeout(() => bubble.remove(), 200);
+        });
+
+        // AUTO POP (mid-height)
+        setTimeout(() => {
+            if (bubble.parentElement && !bubble.classList.contains("pop")) {
+                currentStreak = 0;
+                bubble.classList.add("pop");
+                setTimeout(() => bubble.remove(), 200);
+            }
+        }, autoPopTime);
+
+        playArea.appendChild(bubble);
+    }
+
+    function startGame() {
+        score = 0;
+        timeLeft = 30;
+        currentStreak = 0;
+        bestStreak = 0;
+
+        scoreText.textContent = "0";
+        streakText.textContent = "0";
+        timeText.textContent = "30s";
+
+        playArea.innerHTML = "";
+        gameRunning = true;
+
+        if (gameInterval) clearInterval(gameInterval);
+        if (timerInterval) clearInterval(timerInterval);
+
+        // BUBBLE GENERATION
+        gameInterval = setInterval(() => {
+            for (let i = 0; i < 2; i++) createBubble();
+        }, 650);  // faster bubbles
+
+        // TIMER
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timeText.textContent = timeLeft + "s";
+
+            if (timeLeft <= 0) endGame();
+
+        }, 1000);
+    }
+
+    function endGame() {
+        gameRunning = false;
+        clearInterval(gameInterval);
+        clearInterval(timerInterval);
+
+        alert("Time's up! You popped " + score + " bubbles!");
+    }
+
+    startButton.addEventListener("click", startGame);
+</script>
+
+</body>
+</html>
