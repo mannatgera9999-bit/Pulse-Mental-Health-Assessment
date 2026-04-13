@@ -207,7 +207,7 @@ parseInt(form.q4.value)+
 parseInt(form.q5.value);
 
 let score=Math.round((total/15)*10);
-
+localStorage.setItem("depressionScore", score);
 let message="";
 
 if(score<=3)

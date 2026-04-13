@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smile Zone</title>
+
+<style>
+body{
+    background: radial-gradient(circle at top, #2f80ed 0, #141e30 50%, #0b1020 100%);
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    text-align:center;
+}
+
+.container{
+    max-width:900px;
+    margin:80px auto;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+}
+
+.card{
+    height:180px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.05);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 25px #4b7bec;
+}
+
+h3{
+    margin:10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>😄 Smile Zone</h1>
+<p>Choose something that lifts your mood</p>
+
+<div class="cards">
+
+<div class="card" onclick="go('jokes')">
+    <h3>😂 Jokes</h3>
+    <p>Laugh it out</p>
+</div>
+
+<div class="card" onclick="go('messages')">
+    <h3>💬 Calming Messages</h3>
+    <p>Feel better instantly</p>
+</div>
+
+<div class="card" onclick="go('doodle')">
+    <h3>🎨 Doodle</h3>
+    <p>Express yourself</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+function go(type){
+    window.location.href="/smile/"+type;
+}
+</script>
+
+</body>
+</html>

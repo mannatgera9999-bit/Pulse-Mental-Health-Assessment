@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doodle Zone</title>
+
+<style>
+body{
+    background:#0b1020;
+    color:white;
+    font-family:'Segoe UI',sans-serif;
+    text-align:center;
+}
+
+/* Title */
+h2{
+    margin-top:20px;
+}
+
+/* Toolbar */
+.toolbar{
+    margin-top:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+/* Buttons */
+.tool-btn{
+    padding:8px 14px;
+    border:none;
+    border-radius:10px;
+    background:#1f2a48;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.tool-btn:hover{
+    background:#2f6df6;
+}
+
+.active{
+    background:#2f6df6;
+}
+
+/* Canvas */
+canvas{
+    border:2px solid white;
+    margin-top:20px;
+    background:black;
+    cursor:crosshair;
+}
+
+/* Eraser cursor */
+#cursorCircle{
+    position:absolute;
+    border:2px solid white;
+    border-radius:50%;
+    pointer-events:none;
+    display:none;
+    z-index:10;
+    opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎨 Doodle Zone</h2>
+
+<div class="toolbar">
+
+    <button class="tool-btn active" onclick="setTool('brush', this)">✏ Brush</button>
+    <button class="tool-btn" onclick="setTool('glow', this)">💫 Glow</button>
+    <button class="tool-btn" onclick="setTool('eraser', this)">🧽 Eraser</button>
+
+    <input type="color" id="colorPicker" value="#ff0000">
+    <input type="range" id="size" min="1" max="25" value="5">
+
+    <button class="tool-btn" onclick="clearCanvas()">🗑 Clear</button>
+    <button class="tool-btn" onclick="saveCanvas()">💾 Save</button>
+
+</div>
+
+<canvas id="canvas" width="900" height="500"></canvas>
+
+<!-- Eraser circle -->
+<div id="cursorCircle"></div>
+
+<script>
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+let drawing = false;
+let currentTool = "brush";
+
+let colorPicker = document.getElementById("colorPicker");
+let size = document.getElementById("size");
+let cursor = document.getElementById("cursorCircle");
+
+/* Tool selection */
+function setTool(tool, btn){
+    currentTool = tool;
+
+    document.querySelectorAll(".tool-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+}
+
+/* Drawing */
+canvas.onmousedown = (e)=>{
+    drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+};
+
+canvas.onmouseup = ()=> drawing = false;
+
+canvas.onmouseleave = ()=>{
+    drawing = false;
+    cursor.style.display = "none";
+};
+
+canvas.onmousemove = (e)=>{
+
+    let rect = canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+
+    /* 🎯 Show eraser circle */
+    if(currentTool === "eraser"){
+        let eraserSize = size.value * 2.5;
+
+        cursor.style.display = "block";
+        cursor.style.width = eraserSize + "px";
+        cursor.style.height = eraserSize + "px";
+        cursor.style.left = (e.clientX - eraserSize/2) + "px";
+        cursor.style.top = (e.clientY - eraserSize/2) + "px";
+    } else {
+        cursor.style.display = "none";
+    }
+
+    if(!drawing) return;
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if(currentTool === "brush"){
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = colorPicker.value;
+        ctx.lineWidth = size.value;
+        ctx.shadowBlur = 0;
+    }
+
+    else if(currentTool === "glow"){
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = colorPicker.value;
+        ctx.lineWidth = size.value;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = colorPicker.value;
+    }
+
+    else if(currentTool === "eraser"){
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.lineWidth = size.value * 2.5;  // 🔥 BIG ERASER
+        ctx.shadowBlur = 0;
+    }
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+};
+
+/* Clear */
+function clearCanvas(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* Save */
+function saveCanvas(){
+    let link = document.createElement("a");
+    link.download = "doodle.png";
+    link.href = canvas.toDataURL();
+    link.click();
+}
+</script>
+
+</body>
+</html>

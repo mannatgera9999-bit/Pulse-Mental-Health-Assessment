@@ -503,8 +503,83 @@ def download_pdf():
     pdf.output(PDF_REPORT)
     return send_file(PDF_REPORT, as_attachment=True, download_name="stress_report.pdf")
 
+@app.route("/music")
+def music():
+    redirect_resp = require_login()
+    if redirect_resp:
+        return redirect_resp
+    return render_template("music.html")
+
+@app.route("/therapy/<mode>")
+def therapy_list(mode):
+    return render_template("therapy_list.html", mode=mode)
 
 
+@app.route("/therapy/<mode>/<id>")
+def therapy_player(mode, id):
+
+    audio_map = {
+        "relax": [
+            "/static/audio/relax/relax1.mp3",
+        "/static/audio/relax/relax2.mp3",
+        "/static/audio/relax/relax3.mp3",
+        "/static/audio/relax/relax4.mp3",
+        "/static/audio/relax/relax5.mp3",
+        "/static/audio/relax/relax6.mp3",
+        "/static/audio/relax/relax7.mp3",
+        "/static/audio/relax/relax8.mp3",
+        "/static/audio/relax/relax9.mp3",
+        ],
+        "sleep": ["/static/audio/sleep/sleep1.mp3",
+        "/static/audio/sleep/sleep2.mp3",
+        "/static/audio/sleep/sleep3.mp3",
+        "/static/audio/sleep/sleep4.mp3",
+        "/static/audio/sleep/sleep5.mp3",
+        "/static/audio/sleep/sleep6.mp3",
+        "/static/audio/sleep/sleep7.mp3",
+        "/static/audio/sleep/sleep8.mp3",
+        "/static/audio/sleep/sleep9.mp3",
+        ],
+        "focus": ["/static/audio/focus/focus1.mp3",
+        "/static/audio/focus/focus2.mp3",
+	"/static/audio/focus/focus3.mp3",
+	"/static/audio/focus/focus4.mp3",
+	"/static/audio/focus/focus5.mp3",
+	"/static/audio/focus/focus6.mp3",
+	"/static/audio/focus/focus7.mp3",
+	"/static/audio/focus/focus8.mp3",
+	"/static/audio/focus/focus9.mp3",
+        ],
+        "mood": ["/static/audio/mood/mood1.mp3",
+        "/static/audio/mood/mood2.mp3",
+	"/static/audio/mood/mood3.mp3",
+	"/static/audio/mood/mood4.mp3",
+	"/static/audio/mood/mood5.mp3",
+	"/static/audio/mood/mood6.mp3",
+	"/static/audio/mood/mood7.mp3",
+	"/static/audio/mood/mood8.mp3",
+	"/static/audio/mood/mood9.mp3",
+]
+    }
+
+    audio_list = audio_map.get(mode, [])
+    index = int(id) - 1
+
+    audio = audio_list[index] if index < len(audio_list) else audio_list[0]
+
+    return render_template("therapy_player.html", mode=mode, audio=audio)
+
+@app.route("/smile")
+def smile():
+    return render_template("smile.html")
+
+@app.route("/smile/<mode>")
+def smile_mode(mode):
+
+    if mode == "doodle":
+        return render_template("doodle.html")
+
+    return render_template("smile_mode.html", mode=mode)
 # ---------- Run App ----------
 if __name__ == "__main__":
     app.run(debug=True)

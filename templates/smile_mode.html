@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smile Zone</title>
+
+<style>
+body{
+    background:#0b1020;
+    color:white;
+    font-family:'Segoe UI',sans-serif;
+    text-align:center;
+}
+
+.card{
+    max-width:700px;
+    margin:100px auto;
+    padding:40px;
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+}
+
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:#4b7bec;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="title"></h2>
+
+<p id="content"></p>
+
+<button onclick="next()">Next</button>
+
+</div>
+
+<script>
+
+let jokes = [
+"Why don’t programmers like nature? Too many bugs 😂",
+"I told my computer I needed a break… it said no problem and froze 😄",
+"Debugging: being the detective in a crime movie where you are also the murderer 😅"
+];
+
+let messages = [
+"You’re stronger than you think 💙",
+"This moment will pass 🌿",
+"Take a deep breath… you’re doing okay 🌸"
+];
+
+let mode = "{{ mode }}";
+
+let data = mode === "jokes" ? jokes : messages;
+
+let index = 0;
+
+function next(){
+    index = Math.floor(Math.random()*data.length);
+    document.getElementById("content").innerText = data[index];
+}
+
+document.getElementById("title").innerText =
+    mode === "jokes" ? "😂 Jokes" : "💬 Calming Messages";
+
+next();
+
+</script>
+
+</body>
+</html>
